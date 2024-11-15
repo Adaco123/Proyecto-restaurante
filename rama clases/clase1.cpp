@@ -367,7 +367,170 @@ void Cliente::actualizar(){
 	
 
 }
+void Cliente::eliminar(){ 
+	Cliente nuevo, lista[50];
+  	char dni[15];
+  	char r;
+  	int encontro=1,linea,i,ultimo;
+  	FILE *pa, *pa2;
+  	limpia();
+  	
+	if ((pa = fopen("Archivo Binario", "a+b"))== NULL){ 
+		printf("No se puede abrir el archivo.\n");
+		return;
+    }
+    
+  	rewind(pa); i=0;
+  	while(!feof(pa)){ 
+		if(fread(&nuevo, sizeof(Cliente), 1, pa)){
+	 		lista[i]=nuevo;
+	 		i++;
+		}
+  	}
+  	
+  	fclose(pa);
+ 
+  	//proceso de busqueda de la informaci¢n
+  	gotoxy(4,8);printf("ELIMINAR DATOS");
+  	gotoxy(4,10);
+  	fflush(stdin);
+  	printf("Ingrese Numero De DNI: "); gets(dni);
+  	ultimo=i-1;
+  	i=0;
+  	
+	while (i<=ultimo && encontro){ 
+		if (strcmp(lista[i].dni,dni)==0) 
+			encontro=0;
+    	else 
+			i++;
+  	}
+  	
+  	if (i<=ultimo){
+    	limpia();
+	    gotoxy(4,8);printf("ELIMINAR DATOS");
+	    gotoxy(4,10);printf("1. Nombre:                 %s\n",lista[i].nombre);
+	    gotoxy(4,12);printf("2. DNI:                    %s\n",lista[i].dni);
+	    gotoxy(4,14);printf("3. Telefono:               %s\n",lista[i].telefono);
+	    gotoxy(4,16);printf("4. Ciudad:                 %s\n",lista[i].ciudad);
+		
+		do{	
+			CursorOff();
+			gotoxy(4,22); printf("¨Desea Eliminarlo? Si[s] / No[n]: ");
+			r=getch();
+		}while(r!='S' && r!='s' && r!='N' && r!='n');
+	    
+	    
+		if (r=='s' || r=='S'){ 
+			while (i<ultimo) {
+			    lista[i]=lista[i+1];
+			    i++;
+			}
+		
+			ultimo=i-1;
+			
+			if (((pa = fopen("Archivo Binario", "wb"))== NULL) || ((pa2 = fopen("Archivo Datos", "wb"))== NULL)) 
+	     	{ 
+				printf("No se puede abrir el archivo.\n");
+				return;
+	      	}
+			
+			i=0;
+			
+			while(i<=ultimo){
+				fwrite(&lista[i], sizeof(Cliente), 1, pa);
+				fprintf(pa2, "%s %s %s %s\n", lista[i].nombre, lista[i].dni, lista[i].telefono, lista[i].ciudad);
+			  	i++;
+			}
+			
+			fclose(pa);
+			fclose(pa2);
+			gotoxy(4,22); printf("                                        ");
+			gotoxy(4,22);printf("Cliente Eliminado. Presione una tecla para volver..");
+			CursorOff();
+			getch();
+			limpia();
+			menu();
+	    }
+	    
+	    else{
+	    	gotoxy(4,22); printf("                                    ");
+			gotoxy(4,22);printf("Cliente NO Eliminado. Presione una tecla para volver..");
+			CursorOff();
+			getch();
+			limpia();
+			menu();
+		}
+  	}
+  	
+  	else{ 
+		gotoxy(4,22);printf("Cliente NO Registrado. Presione una tecla para volver..");
+    	CursorOff();
+    	getch();
+		limpia();
+		menu();
+  	}
+  	
+}
 
+
+
+// FUNCION CONSULTAR: REALIZA LA CONSULTA DEL CLIENTE, SE INGRESA EL DNI , Y ESTE NOS MUESTRA TODA LA INFORMACION DEL CLIENTE
+void Cliente::consultar(){ 
+	Cliente nuevo, lista[50];
+  	char dni[15];
+  	int encontro=1,linea,i,ultimo;
+  	FILE *pa;
+  	limpia();
+  	if ((pa = fopen("Archivo Binario", "a+b"))== NULL)
+      { printf("No se puede abrir el archivo.\n");
+	return;
+      }
+  	rewind(pa); i=0;
+  	while(!feof(pa))
+  	{ if(fread(&nuevo, sizeof(Cliente), 1, pa)){
+	 lista[i]=nuevo;
+	 i++;
+	 }
+  	}
+  	fclose(pa);
+ 
+
+  	//proceso de busqueda de la informaci¢n
+  	gotoxy(4,8);printf("CONSULTA DE CLIENTES");
+  	gotoxy(4,10);
+  	fflush(stdin);
+  	printf("Ingrese Numero De DNI: ");gets(dni);
+  	ultimo=i-1;
+  	i=0;
+  	while (i<=ultimo && encontro)
+  	{	 if (strcmp(lista[i].dni,dni)==0) encontro=0;
+    	else i++;
+  	}
+  	if (i<=ultimo)
+  	{
+    	limpia();
+	    gotoxy(4,8);printf("CONSULTA DE CLIENTES");
+	    gotoxy(4,10);printf("1. Nombre:                 %s\n",lista[i].nombre);
+	    gotoxy(4,12);printf("2. DNI:                    %s\n",lista[i].dni);
+	    gotoxy(4,14);printf("3. Telefono:               %s\n",lista[i].telefono);
+	    gotoxy(4,16);printf("4. Ciudad:                 %s\n",lista[i].ciudad);
+	
+	    gotoxy(4,22);printf("Presione una tecla para volver...                   ");
+	    CursorOff();
+	    getch();
+		limpia();
+		menu();
+  	}
+  	else
+  	{ 
+    	gotoxy(4,22);printf("Usuario NO registrado. Presione una tecla para volver... ");
+    	CursorOff();
+    	getch();
+		limpia();
+		menu();
+  	}
+  	
+}
 
 
 // FUNCION INGRESO DE DATOS: ESTA FUNCIÓN PERMITE INGRESAR LOS DATOS DEL CLIENTE, Y LA CREACIÓN DEL ARCHIVO QUE LO LLAMAREMOS E2, QUE ALMACENARÁ ESTOS DATOS PARA QUE UNA VEZ SE CIERRE EL PROGRAMA, ESTOS QUEDEN GUARDADOS.
