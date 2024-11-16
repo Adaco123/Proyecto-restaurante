@@ -3,3 +3,7 @@ por que es necesario abrirlo en un CMD, si es ejecutado en VISUAL STUDIO CODE lo
 INTENTE cambiar el ejecutable en visual studio code de terminal a CMD pero da errores, por eso opte por ir por:
 			
 					CODEBLOCKS C++
+
+Al ejecutar el proyecto: 
+NOMBRE DE USUARIO: AdalidGarcia
+CONTRASEÑA: 12345
