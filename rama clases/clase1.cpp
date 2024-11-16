@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <windows.h>
 #include <iostream>
+HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
 
 using namespace std;
 
@@ -56,6 +57,21 @@ class Titulo{
 	    friend void mostrarTitulo(Titulo);  //prototipo function amiga
 	    
 };
+
+
+//FUNCION PRINCIPAL MAIN: EN ESTA FUNCION PRINCIPAL AQUI SE LLAMAN A LOS DEMAS METODOS
+int main(){
+	system("mode con: cols=80 lines=25");
+	Titulo Ti;
+	system("COLOR 70");
+	dibujarCuadro(1,1,78,24);//Cuadro grande
+	dibujarCuadro(2,2,77,4);//Cuadro titulo
+	mostrarTitulo(Ti);
+	login();
+	return 0;
+}
+
+
 //FUNCION MOSTRARTITULO, PERMITE LLAMAR A LA FUNCION AMIGA Y MOSTRAR EL TEMA E IMPRIMIRLO
 void mostrarTitulo(Titulo T){
 	gotoxy(16,3); printf(T.nombre);
@@ -150,6 +166,9 @@ void menu(){
 		exit(0);
 	
 }
+
+
+// FUNCION INGRESO DE DATOS: ESTA FUNCIÓN PERMITE INGRESAR LOS DATOS DEL CLIENTE, Y LA CREACIÓN DEL ARCHIVO QUE LO LLAMAREMOS E2, QUE ALMACENARÁ ESTOS DATOS PARA QUE UNA VEZ SE CIERRE EL PROGRAMA, ESTOS QUEDEN GUARDADOS.
 void Cliente::ingreso(){
 	FILE *pa, *pa2;                                //AQUI SE CREAN 2 VARIABLEs DE TIPO APUNTADOR CON EL NOMBRE PA Y PA2. ES DECIR, UNA VARIABLE PARA CADA ARCHIVO..
 	char r;                                        //..LA CUEAL VA A CONTENER LA DIRECCION FISICA DE LOS ARCHIVOS UTILIZADOS 
@@ -367,6 +386,9 @@ void Cliente::actualizar(){
 	
 
 }
+
+
+//FUNCION ELIMINAR: PERMITE ELIMINAR UN CLIENTE
 void Cliente::eliminar(){ 
 	Cliente nuevo, lista[50];
   	char dni[15];
@@ -531,6 +553,9 @@ void Cliente::consultar(){
   	}
   	
 }
+
+
+//FUNCION PARA REALIZAR COMPRAS EN EL RESTAURANTE
 void comprar(){
 	limpia();
   	gotoxy(4,8);printf("COMPRA >> ");
@@ -899,6 +924,8 @@ void cambio(char a[]){
 	a[aux-1] = '\0';
 }
 
+
+//FUNCION QUE OCULTA EL CURSOR
 void CursorOff()
 {
   CONSOLE_CURSOR_INFO cursor = {1, FALSE};
@@ -906,7 +933,6 @@ void CursorOff()
 }
 
 
-// FUNCION INGRESO DE DATOS: ESTA FUNCIÓN PERMITE INGRESAR LOS DATOS DEL CLIENTE, Y LA CREACIÓN DEL ARCHIVO QUE LO LLAMAREMOS E2, QUE ALMACENARÁ ESTOS DATOS PARA QUE UNA VEZ SE CIERRE EL PROGRAMA, ESTOS QUEDEN GUARDADOS.
 //FUNCION PARA QUE APAREZCA EL CURSOR
 void CursorOn(bool visible, DWORD size) // set bool visible = 0 - invisible, bool visible = 1 - visible
 {
@@ -939,4 +965,3 @@ void limpia(){
 		for(j=4;j<=75;j++){
 			gotoxy(j,i); printf(" ");}}
 }
-
