@@ -531,6 +531,379 @@ void Cliente::consultar(){
   	}
   	
 }
+void comprar(){
+	limpia();
+  	gotoxy(4,8);printf("COMPRA >> ");
+
+	Cliente nuevo, lista[50];
+  	char dni[15];
+  	char op2,op3;
+	int encontro=1,i,ultimo,op,r;
+	float total=0, total2=0,cambio,cant,tc,sumacred,desc=0;
+ 	float pago=0;
+	
+	FILE *pa;
+  	if ((pa = fopen("Archivo Binario", "a+b"))== NULL){ 
+		printf("No se puede abrir el archivo.\n");
+		return;
+    }
+  	rewind(pa); i=0;
+  	while(!feof(pa)){ 
+		if(fread(&nuevo, sizeof(Cliente), 1, pa)){
+		 	lista[i]=nuevo;
+		 	i++;
+		}
+  	}
+  	fclose(pa);
+
+  	//proceso de busqueda de la informaci¢n
+  	gotoxy(4,10);
+  	fflush(stdin);
+  	printf("Ingrese Numero De DNI: ");gets(dni);
+  	ultimo=i-1;
+  	i=0;
+  	while (i<=ultimo && encontro){ 
+		if (strcmp(lista[i].dni,dni)==0) 
+			encontro=0;
+    	else i++;
+  	}
+  	
+	if (i<=ultimo)
+  	{
+    	gotoxy(4,10);printf("                                              ");
+    	gotoxy(14,8);printf("Cliente: %s\n",lista[i].nombre);
+
+		do{
+			gotoxy(39,13);printf("                                      ");
+			//MENU
+			gotoxy(4,11);printf("MENU DISPONIBLE");
+			gotoxy(4,13);printf("1) Hamburguesa sencilla      $ 1.00");
+			gotoxy(4,14);printf("2) Hamurguesa doble          $ 1.25");
+			gotoxy(4,15);printf("3) Hamburguesa + papas       $ 1.50");
+			gotoxy(4,16);printf("4) Hamburguesa completa      $ 1.75");
+			gotoxy(4,17);printf("5) Salchipapas               $ 1.75");
+			gotoxy(4,18);printf("6) Jugo                      $ 0.50");
+			gotoxy(4,19);printf("7) Yogurt                    $ 0.75");
+			gotoxy(4,20);printf("8) Cafe                      $ 1.00");
+			gotoxy(4,21);printf("9) Agua                      $ 0.50");
+			gotoxy(47,11);printf("Ingrese opcion del menu: "); 
+	
+			do{ 
+		     	gotoxy(72,11); printf("  ");
+				gotoxy(72,11); scanf("%i",&op);
+			}while (op <1 || op > 9);
+			
+			
+			fflush(stdin);
+			switch(op){
+				case 1: 
+				gotoxy(47,13);printf("Ingrese cantidad: ");
+				scanf("%f",&cant);
+				tc = cant * 1.00; 
+				total += tc;
+				break;
+				
+				case 2: 
+				gotoxy(47,13);printf("Ingrese cantidad: ");
+				scanf("%f",&cant);
+				tc = cant * 1.25;
+				total += tc;
+				break;
+				
+				case 3: 
+				gotoxy(47,13);printf("Ingrese cantidad: ");
+				scanf("%f",&cant);
+				tc = cant * 1.50;
+				total += tc;
+				break;
+				
+				case 4: 
+				gotoxy(47,13);printf("Ingrese cantidad: ");
+				scanf("%f",&cant);
+				tc = cant * 1.75;
+				total += tc;
+				break;
+				
+				case 5: 
+				gotoxy(47,13);printf("Ingrese cantidad: ");
+				scanf("%f",&cant);
+				tc = cant * 1.75;
+				total += tc;
+				break;
+				
+				case 6: 
+				gotoxy(47,13);printf("Ingrese cantidad: ");
+				scanf("%f",&cant);
+				tc = cant * 0.50;
+				total += tc;
+				break;
+				
+				case 7: 
+				gotoxy(47,13);printf("Ingrese cantidad: ");
+				scanf("%f",&cant);
+				tc = cant * 0.75;
+				total += tc;
+				break;	
+				
+				case 8: 
+				gotoxy(47,13);printf("Ingrese cantidad: ");
+				scanf("%f",&cant);
+				tc = cant * 1.00;
+				total += tc;
+				break;	
+				
+				case 9: 
+				gotoxy(47,13);printf("Ingrese cantidad: ");
+				scanf("%f",&cant);
+				tc = cant * 0.50;
+				total += tc;
+				break;			
+			}
+
+
+		
+		do{
+			CursorOff();
+			gotoxy(47,19);printf("¨Desea Seguir Pidiendo?");
+			gotoxy(47,21);printf("Si[s] / No[n]: ");
+			op3 = getch();	
+		}while (op3!='S' && op3!='s' && op3!='N' && op3!='n');
+		
+		
+		if(op3== 'S' || op3=='s') {
+			gotoxy(47,11);printf("                               ");
+			gotoxy(47,19);printf("                               ");
+			gotoxy(47,21);printf("                               ");
+			CursorOn(1,10);
+		}
+		
+	    }while (op3!='n' && op3!='N');
+		
+		gotoxy(47,11);printf("                               ");
+		gotoxy(47,13);printf("                               ");
+		gotoxy(47,19);printf("                               ");
+		gotoxy(47,21);printf("                               ");
+		gotoxy(47,11); printf("Valor del Pedido:  $ %6.2f",total);
+	
+		do{
+			CursorOff();
+			gotoxy(47,17);printf("Pagar con:");
+			gotoxy(47,19);printf("<1> Efectivo");
+			gotoxy(47,21);printf("<2> Tarjeta");
+			op2 = getch();	
+		}while (op2!='1' && op2!='2');
+	
+		if(op2=='1'){
+			CursorOn(1,10);
+			gotoxy(47,17); printf("                         ");
+			gotoxy(47,19); printf("                         ");
+			gotoxy(47,21); printf("                         ");
+			gotoxy(47,19); printf("Ingresar valor en efectivo:"); 
+			gotoxy(47,21); printf("$  ");scanf("%f",&pago);
+			
+			if (total > pago){
+				gotoxy(4,23); printf("Dinero insuficiente para realizar el pedido..");
+				CursorOff();
+				getch();
+			}
+			
+			else{
+				cambio = pago - total;	
+			   
+				fflush(stdin);
+				limpia();
+				
+				dibujarCuadro(13,8,66,19);
+				gotoxy(20,10); printf("              R E C I B O  ");
+				gotoxy(20,12);printf("DNI:                %s",lista[i].dni);
+				gotoxy(20,13);printf("Cliente:            %s",lista[i].nombre);
+				gotoxy(20,14);printf("Valor del Pedido:   $ %6.2f",total);
+				gotoxy(20,15);printf("Descuento:          $ %6.2f",desc);
+				gotoxy(20,16);printf("Su cambio es:       $ %6.2f",cambio);
+			}
+		}
+	
+		if(op2=='2'){
+			CursorOn(1,10);
+			gotoxy(47,17); printf("                         ");
+			gotoxy(47,19); printf("                         ");
+			gotoxy(47,21); printf("                         ");
+			gotoxy(47,19); printf("Ingresar valor de la tarjeta:"); 
+			gotoxy(47,21); printf("$  ");scanf("%f",&pago);
+			
+			if (total > pago){
+					gotoxy(4,23); printf("Dinero insuficiente para realizar el pedido");
+					CursorOff();
+					getch();
+			}
+				
+			else{
+				desc = total*0.05;
+		 		cambio = pago - (total-desc);	
+				   
+				fflush(stdin);
+				limpia();
+					
+				dibujarCuadro(13,8,66,19);
+				gotoxy(20,10); printf("              R E C I B O  ");
+				gotoxy(20,12);printf("DNI:                %s",lista[i].dni);
+				gotoxy(20,13);printf("Cliente:            %s",lista[i].nombre);
+				gotoxy(20,14);printf("Valor del Pedido:   $ %6.2f",total);
+				gotoxy(20,15);printf("Descuento:          $ %6.2f",desc);
+				gotoxy(20,16);printf("Total a pagar:      $ %6.2f",total-desc);
+				gotoxy(20,17);printf("Su cambio es:       $ %6.2f",cambio);
+			}
+		}
+	
+
+		gotoxy(4,23);printf("                                                           ");
+		gotoxy(4,23);printf("Presione una tecla para volver... ");
+		CursorOff();
+		getch();
+		limpia();
+		menu();
+  
+   }
+  
+	else{
+		CursorOff();
+      	gotoxy(4,20);printf("Cliente NO registrado en el sistema.");
+      	gotoxy(4,22);printf("Presione una tecla para volver... ");
+      	CursorOff;
+      	getch();
+	  	limpia();
+	  	menu();
+	}
+}
+
+
+//FUNCION QUE MUESTRA VENTANA DE LOGIN , Y PERMITE INGRESAR USUARIO Y CONTRASEÑA
+void login(){
+	CursorOn(1,10);
+	char user[] = "AdalidGarcia"; //Modificar colocando el usuario que deseean
+	char contra[] = "12345"; //Modificar contraseña que deseen
+	char user2[20],contra2[20];
+	int x=600;
+	int f=41;
+
+	gotoxy(35,6); printf("LOGIN");
+	dibujarCuadro(18,9,60,15);
+	gotoxy(23,13); printf("Clave:   ");
+	gotoxy(23,11); printf("Usuario: ");
+	fgets(user2,20,stdin);
+	cambio(user2);
+	
+	gotoxy(23,13); printf("Clave:   ");
+	leerPasw(contra2);
+	
+	CursorOff();
+	
+	for(int i = 0; i < 3; i++ ){
+		gotoxy(33,19); printf("Cargando");
+		gotoxy(f,19); printf(".");
+		f+=1;
+		Sleep(x);
+	}
+	
+	
+	f=51;
+	
+	if ((strcmp(user2,user)) == 0 && (strcmp(contra2,contra)) == 0){
+		gotoxy(30,19); printf("                                     ");
+		for(int i = 0; i < 3; i++ ){
+			gotoxy(30,19); printf("Accediendo al Sistema");
+			gotoxy(f,19); printf(".");
+			f+=1;
+			Sleep(x);
+		}
+		limpia();	
+		menu();
+	} 
+	
+	
+	else{
+		gotoxy(35,19); printf("                                     ");
+		gotoxy(30,19); printf("Datos incorrectos");
+		gotoxy(18,20); printf("Presione una tecla para volver a ingresar..");
+		getch();
+		limpia();
+		login();
+	}
+}
+
+
+//FUNCION LEER CONTRASEÑA: proceso que permite mostrar asteriscos en la contraseña
+void leerPasw(char frase[])
+{
+    int i=0;
+    cout.flush();
+	int aux=0;
+	
+    do
+    {
+        frase[i] = (unsigned char)getch();
+
+		
+        if(frase[i]!=8)  // no es retroceso
+        {
+            cout << '*';  // muestra por pantalla
+            i++;
+            
+            if (frase[i-1]==13){
+        		printf("\b \b");
+			}
+        }
+        
+        
+        
+        else if(i>0)    // es retroceso y hay caracteres
+        {
+            cout << (char)8 << (char)32 << (char)8;
+            i--;  //el caracter a borrar e el backspace
+        }
+        
+        
+        cout.flush();
+
+    }while(frase[i-1]!=13);  // si presiona ENTER
+
+    frase[i-1] = 0;
+}
+
+//FUNCION QUE DIBUJA UN CUADRO, SE PASAN LOS VALORES DONDE QUEREMOS QUE SE FORME EL CUADRO, EJEMPLO dibujarCuadro(1,1,78,24);
+void dibujarCuadro(int x1,int y1,int x2,int y2)
+{
+
+    int i;
+    for (i=x1;i<x2;i++)
+    {
+	gotoxy(i,y1);printf("Ä") ;//linea horizontal superior
+	gotoxy(i,y2);printf("Ä") ;//linea horizontal inferior
+    }
+
+    for (i=y1;i<y2;i++)
+    {
+	gotoxy(x1,i);printf("³") ;//linea vertical izquierda
+	gotoxy(x2,i);printf("³") ;//linea vertical derecha
+    }
+    gotoxy(x1,y1);printf("Ú");
+    gotoxy(x1,y2);printf("À");
+    gotoxy(x2,y1);printf("¿");
+    gotoxy(x2,y2);printf("Ù");
+}
+
+//FUNCIÓN CAMBIO
+void cambio(char a[]){
+	int aux;
+	aux = strlen(a);
+	a[aux-1] = '\0';
+}
+
+void CursorOff()
+{
+  CONSOLE_CURSOR_INFO cursor = {1, FALSE};
+  SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursor);
+}
 
 
 // FUNCION INGRESO DE DATOS: ESTA FUNCIÓN PERMITE INGRESAR LOS DATOS DEL CLIENTE, Y LA CREACIÓN DEL ARCHIVO QUE LO LLAMAREMOS E2, QUE ALMACENARÁ ESTOS DATOS PARA QUE UNA VEZ SE CIERRE EL PROGRAMA, ESTOS QUEDEN GUARDADOS.
